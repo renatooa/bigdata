@@ -2,7 +2,7 @@ import mincemeat
 import glob
 import csv
 
-text_files = glob.glob('C:\\Users\\Renato\\Desktop\\big\\Exerc\\textos\\*')
+text_files = glob.glob('C:\\Users\\Renato\\Documents\\GitHub\\bigdata\\python\\textos\\*')
 
 def file_contents(file_name):
     f = open(file_name)
@@ -33,7 +33,7 @@ s.reducefn = reducefn
 
 results = s.run_server(password="changeme")
 
-w = csv.writer(open("C:\\Users\\Renato\\Desktop\\big\\Exerc\\result_21.csv", "w"))
+w = csv.writer(open("C:\\Users\\Renato\\Documents\\GitHub\\bigdata\\python\\result_21.csv", "w"))
 for k, v in results.items():
     w.writerow([k, v])
 

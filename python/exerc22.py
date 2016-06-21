@@ -22,6 +22,12 @@ def file_contents(file_name):
 
 source = dict((file_name, file_contents(file_name))for file_name in text_files)
 
+vendas_csv = str(dir_files_join + '2.2-vendas.csv')
+filiais_csv = str(dir_files_join + '2.2-filiais.csv')
+
+print(vendas_csv)
+print(filiais_csv)
+
 def mapfn(k, v):
     print 'map ' +k
     for line in v.splitlines():
@@ -53,5 +59,4 @@ results = s.run_server(password="changeme")
 w = csv.writer(open(dir_base + "\\result_22.csv", "w"))
 for k, v in results.items():
     w.writerow([k, str(v).replace("[","").replace("]","").replace("'","").replace(' ', '')])
-
-
+w.close

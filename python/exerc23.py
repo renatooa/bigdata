@@ -1,7 +1,9 @@
 import mincemeat
 import glob
 import csv
-import os
+import os, sys
+import time
+import operator
 
 dir_base = os.getcwd()
 dir_files_trab = dir_base + '\\trab2.3\\'
@@ -28,12 +30,26 @@ def mapfn(k, v):
         for autor in autores.split("::"):
             for palavra in titulo.split():
                 if (palavra not in allStopWords and len(palavra) > 1):
-                    yield autor.lower() + ';' + palavra.lower(),1
+                    yield autor.lower(),palavra.lower()
                             
     
 def reducefn(k, v):
     print 'reduce ' + k
-    return sum(v)
+    dictPalavras = dict()
+
+    for palavra in v:
+        total = dictPalavras.get(palavra,0) + 1
+        dictPalavras[palavra] = total       
+    
+    return dictPalavras
+
+def stringLinhaPalavras(dictPalavras):
+    ordenada = sorted(dictPalavras.items(), key=lambda x:x[1], reverse=True)
+    linhas = list()
+    for palavra in ordenada:
+        linha = str(palavra).replace("('","").replace(")","").replace(",",":").replace(" ","").replace("'","")
+        linhas.append(linha)
+    return str(linhas).replace("'","").replace("[","").replace("]","").replace(" ", "")
 
 s = mincemeat.Server()
 
@@ -41,12 +57,13 @@ s.datasource = source
 s.mapfn = mapfn
 s.reducefn = reducefn
 
+tempoIni = time.time()
 results = s.run_server(password="changeme")
 
 w = csv.writer(open(dir_base +'\\result_23.csv', "w"))
 for k, v in results.items():
-    autor = str(k).split(";")[0].upper()
-    palavra = str(k).split(";")[1].lower().capitalize()
-    w.writerow([autor, palavra, v])
-
-
+    linha = str(k).upper()+':'+stringLinhaPalavras(v)
+    w.writerow([linha])
+    
+print 'Processo finalizado em ', time.time() - tempoIni, 'segundos'
+print 'digite exit() para sair'
